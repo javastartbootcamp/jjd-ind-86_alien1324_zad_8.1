@@ -1,7 +1,7 @@
 package pl.javastart.task;
 
 public class UniversityApp {
-
+    UniversityDatabase uniData = new UniversityDatabase();
     /**
      * Tworzy prowadzącego zajęcia.
      * W przypadku gdy prowadzący z zadanym id już istnieje, wyświetlany jest komunikat:
@@ -12,8 +12,14 @@ public class UniversityApp {
      * @param firstName - imię prowadzącego
      * @param lastName  - nazwisko prowadzącego
      */
-    public void createLecturer(int id, String degree, String firstName, String lastName) {
 
+    public void createLecturer(int id, String degree, String firstName, String lastName) {
+        if (uniData.lecturerExist(id)) {
+            System.out.println("Prowadzący z id " + id + " już istnieje");
+        } else {
+            Lecturer lecturer = new Lecturer(id, degree, firstName, lastName);
+            uniData.newLecturer(lecturer);
+        }
     }
 
     /**
@@ -28,9 +34,15 @@ public class UniversityApp {
      * @param lecturerId - identyfikator prowadzącego. Musi zostać wcześniej utworzony za pomocą metody {@link #createLecturer(int, String, String, String)}
      */
     public void createGroup(String code, String name, int lecturerId) {
-
+        if (uniData.groupExist(code)) {
+            System.out.println("Grupa " + code + " już istnieje");
+        } else if (!uniData.lecturerExist(lecturerId)) {
+            System.out.println("Prowadzący o id " + lecturerId + " nie istnieje");
+        } else {
+            Group group = new Group(code, name, lecturerId);
+            uniData.newGroup(group);
+        }
     }
-
 
     /**
      * Dodaje studenta do grupy zajęciowej.
@@ -45,7 +57,6 @@ public class UniversityApp {
     public void addStudentToGroup(int index, String groupCode, String firstName, String lastName) {
 
     }
-
 
     /**
      * Wyświetla informacje o grupie w zadanym formacie.
