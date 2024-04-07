@@ -1,24 +1,24 @@
 package pl.javastart.task;
 
 public class UniversityDatabase {
-    Student[] students = new Student[2];
-    int studentsIndex = 0;
-    Lecturer[] lecturers = new Lecturer[2];
-    int lecturersIndex = 0;
-    Group[] groups = new Group[2];
-    int groupsIndex = 0;
+    private Student[] students = new Student[2];
+    private int studentsIndex = 0;
+    private Lecturer[] lecturers = new Lecturer[2];
+    private int lecturersIndex = 0;
+    private Group[] groups = new Group[2];
+    private int groupsIndex = 0;
 
-    void newGroup(Group g) {
-        groups[groupsIndex] = g;
+    public void newGroup(Group group) {
+        groups[groupsIndex] = group;
         groupsIndex++;
         if (groupsIndex >= groups.length) {
-            Group[] newgroups = new Group[groups.length * 2];
-            System.arraycopy(newgroups, 0, groups, 0, groups.length);
-            groups = newgroups;
+            Group[] newGroups = new Group[groups.length * 2];
+            System.arraycopy(newGroups, 0, groups, 0, groups.length);
+            groups = newGroups;
         }
     }
 
-    boolean groupExist(String code) {
+    public boolean groupExist(String code) {
         for (int i = 0; i < groupsIndex; i++) {
             if (groups[i].getCode() == code) {
                 return true;
@@ -27,32 +27,74 @@ public class UniversityDatabase {
         return false;
     }
 
-    void newStudent(Student g) {
-        students[studentsIndex] = g;
-        studentsIndex++;
+    public Group getGroup(String code) {
+        for (int i = 0; i < groupsIndex; i++) {
+            if (groups[i].getCode() == code) {
+                return groups[i];
+            }
+        }
+        return null;
+    }
+
+    public void newStudent(Student student) {
         if (studentsIndex >= students.length) {
-            Student[] newstudents = new Student[students.length * 2];
-            System.arraycopy(newstudents, 0, students, 0, students.length);
-            students = newstudents;
+            Student[] newStudents = new Student[students.length * 2];
+            System.arraycopy(newStudents, 0, students, 0, students.length);
+            students = newStudents;
+        }
+        students[studentsIndex] = student;
+        studentsIndex++;
+    }
+
+    public boolean studendExist(int id) {
+        for (int i = 0; i < studentsIndex; i++) {
+            if (students[i].getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Student getStudent(int id) {
+        for (int i = 0; i < studentsIndex; i++) {
+            if (students[i].getId() == id) {
+                return students[i];
+            }
+        }
+        return null;
+    }
+
+    public void printStudents() {
+        for (int i = 0; i < studentsIndex; i++) {
+            students[i].printInfo();
         }
     }
 
-    void newLecturer(Lecturer g) {
-        lecturers[lecturersIndex] = g;
-        lecturersIndex++;
+    public void newLecturer(Lecturer lecturer) {
         if (lecturersIndex >= lecturers.length) {
-            Lecturer[] newlecturers = new Lecturer[lecturers.length * 2];
-            System.arraycopy(newlecturers, 0, lecturers, 0, lecturers.length);
-            lecturers = newlecturers;
+            Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];
+            System.arraycopy(newLecturers, 0, lecturers, 0, lecturers.length);
+            lecturers = newLecturers;
         }
+        lecturers[lecturersIndex] = lecturer;
+        lecturersIndex++;
     }
 
-    boolean lecturerExist(int id) {
+    public boolean lecturerExist(int id) {
         for (int i = 0; i < lecturersIndex; i++) {
             if (lecturers[i].getId() == id) {
                 return true;
             }
         }
         return false;
+    }
+
+    public Lecturer getLecturer(int id) {
+        for (int i = 0; i < lecturersIndex; i++) {
+            if (lecturers[i].getId() == id) {
+                return lecturers[i];
+            }
+        }
+        return null;
     }
 }

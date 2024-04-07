@@ -8,6 +8,10 @@ public class Lecturer extends UniPerson {
         this.degree = degree;
     }
 
+    public void printInfo() {
+        System.out.println(getDegree() + " " + getFirstName() + " " + getLastName());
+    }
+
     public String getDegree() {
         return degree;
     }

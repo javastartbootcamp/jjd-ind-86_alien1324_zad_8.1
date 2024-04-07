@@ -39,7 +39,7 @@ public class UniversityApp {
         } else if (!uniData.lecturerExist(lecturerId)) {
             System.out.println("Prowadzący o id " + lecturerId + " nie istnieje");
         } else {
-            Group group = new Group(code, name, lecturerId);
+            Group group = new Group(code, name, uniData.getLecturer(lecturerId));
             uniData.newGroup(group);
         }
     }
@@ -55,7 +55,19 @@ public class UniversityApp {
      * @param lastName  - nazwisko studenta
      */
     public void addStudentToGroup(int index, String groupCode, String firstName, String lastName) {
-
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else {
+            Student student;
+            if (!uniData.studendExist(index)) {
+                student = new Student(index, firstName, lastName);
+                uniData.newStudent(student);
+            } else {
+                student = uniData.getStudent(index);
+            }
+            Group group = uniData.getGroup(groupCode);
+            group.addStudent(student);
+        }
     }
 
     /**
@@ -73,6 +85,17 @@ public class UniversityApp {
      * @param groupCode - kod grupy, dla której wyświetlić informacje
      */
     public void printGroupInfo(String groupCode) {
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Gruoa " + groupCode + " nie znaleziona");
+        } else {
+            Group group = uniData.getGroup(groupCode);
+            System.out.println("Kod: " + group.getCode());
+            System.out.println("Nazwa " + group.getName());
+            System.out.print("Prowadzący: ");
+            group.getLecturer().printInfo();
+            System.out.println("Uczestnicy:");
+            group.printStudents();
+        }
 
     }
 
@@ -128,6 +151,6 @@ public class UniversityApp {
      * 189521 Anna Kowalska
      */
     public void printAllStudents() {
-
+        uniData.printStudents();
     }
 }
