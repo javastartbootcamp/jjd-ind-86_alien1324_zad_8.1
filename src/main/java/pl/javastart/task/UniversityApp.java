@@ -1,7 +1,7 @@
 package pl.javastart.task;
 
 public class UniversityApp {
-
+    private UniversityDatabase uniData = new UniversityDatabase();
     /**
      * Tworzy prowadzącego zajęcia.
      * W przypadku gdy prowadzący z zadanym id już istnieje, wyświetlany jest komunikat:
@@ -12,8 +12,14 @@ public class UniversityApp {
      * @param firstName - imię prowadzącego
      * @param lastName  - nazwisko prowadzącego
      */
-    public void createLecturer(int id, String degree, String firstName, String lastName) {
 
+    public void createLecturer(int id, String degree, String firstName, String lastName) {
+        if (uniData.lecturerExist(id)) {
+            System.out.println("Prowadzący z id " + id + " już istnieje");
+        } else {
+            Lecturer lecturer = new Lecturer(id, degree, firstName, lastName);
+            uniData.newLecturer(lecturer);
+        }
     }
 
     /**
@@ -28,9 +34,15 @@ public class UniversityApp {
      * @param lecturerId - identyfikator prowadzącego. Musi zostać wcześniej utworzony za pomocą metody {@link #createLecturer(int, String, String, String)}
      */
     public void createGroup(String code, String name, int lecturerId) {
-
+        if (uniData.groupExist(code)) {
+            System.out.println("Grupa " + code + " już istnieje");
+        } else if (!uniData.lecturerExist(lecturerId)) {
+            System.out.println("Prowadzący o id " + lecturerId + " nie istnieje");
+        } else {
+            Group group = new Group(code, name, uniData.getLecturer(lecturerId));
+            uniData.newGroup(group);
+        }
     }
-
 
     /**
      * Dodaje studenta do grupy zajęciowej.
@@ -43,9 +55,22 @@ public class UniversityApp {
      * @param lastName  - nazwisko studenta
      */
     public void addStudentToGroup(int index, String groupCode, String firstName, String lastName) {
-
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else if (uniData.getGroup(groupCode).studentInGroup(index)) {
+            System.out.println("Student o indeksie " + index + " jest już w grupie " + groupCode);
+        } else {
+            Student student;
+            if (!uniData.studendExist(index)) {
+                student = new Student(index, firstName, lastName);
+                uniData.newStudent(student);
+            } else {
+                student = uniData.getStudent(index);
+            }
+            Group group = uniData.getGroup(groupCode);
+            group.addStudent(student);
+        }
     }
-
 
     /**
      * Wyświetla informacje o grupie w zadanym formacie.
@@ -62,6 +87,17 @@ public class UniversityApp {
      * @param groupCode - kod grupy, dla której wyświetlić informacje
      */
     public void printGroupInfo(String groupCode) {
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie znaleziona");
+        } else {
+            Group group = uniData.getGroup(groupCode);
+            System.out.println("Kod: " + group.getCode());
+            System.out.println("Nazwa: " + group.getName());
+            System.out.print("Prowadzący: ");
+            group.getLecturer().printInfo();
+            System.out.println("Uczestnicy:");
+            group.printStudents();
+        }
 
     }
 
@@ -80,6 +116,15 @@ public class UniversityApp {
      * @param grade        - ocena
      */
     public void addGrade(int studentIndex, String groupCode, double grade) {
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else if (!uniData.getGroup(groupCode).studentInGroup(studentIndex)) {
+            System.out.println("Student o indeksie " + studentIndex + " nie jest zapisany do grupy " + groupCode);
+        } else if (uniData.getStudent(studentIndex).hasGrade(groupCode)) {
+            System.out.println("Student o indeksie " + studentIndex + " ma już wystawioną ocenę dla grupy " + groupCode);
+        } else {
+            uniData.getStudent(studentIndex).newGrade(new Grade(grade, groupCode, uniData.getGroup(groupCode).getName()));
+        }
 
     }
 
@@ -92,7 +137,11 @@ public class UniversityApp {
      * @param index - numer indesku studenta dla którego wyświetlić oceny
      */
     public void printGradesForStudent(int index) {
-
+        if (!uniData.studendExist(index)) {
+            System.out.println("Student o indeksie " + index + " nie istnieje");
+        } else {
+            uniData.getStudent(index).printGrades();
+        }
     }
 
     /**
@@ -105,7 +154,11 @@ public class UniversityApp {
      * @param groupCode - kod grupy, dla której wyświetlić oceny
      */
     public void printGradesForGroup(String groupCode) {
-
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else {
+            uniData.getGroup(groupCode).printGrades();
+        }
     }
 
     /**
@@ -117,6 +170,6 @@ public class UniversityApp {
      * 189521 Anna Kowalska
      */
     public void printAllStudents() {
-
+        uniData.printStudents();
     }
 }
