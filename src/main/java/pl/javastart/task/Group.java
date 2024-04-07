@@ -16,16 +16,34 @@ public class Group {
     public void addStudent(Student student) {
         if (studentsIndex >= students.length) {
             Student[] newStudents = new Student[students.length * 2];
-            System.arraycopy(newStudents, 0, students, 0, students.length);
+            System.arraycopy(students, 0, newStudents, 0, students.length);
             students = newStudents;
         }
         students[studentsIndex] = student;
         studentsIndex++;
     }
 
+    public boolean studentInGroup(int studentId) {
+        for (int i = 0; i < studentsIndex; i++) {
+            if (students[i].getId() == studentId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void printStudents() {
         for (int i = 0; i < studentsIndex; i++) {
             students[i].printInfo();
+            System.out.println();
+        }
+    }
+
+    public void printGrades() {
+        for (int i = 0; i < studentsIndex; i++) {
+            students[i].printInfo();
+            System.out.print(": ");
+            students[i].printGrade(code);
         }
     }
 

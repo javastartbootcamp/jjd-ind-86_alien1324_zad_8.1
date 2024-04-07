@@ -9,13 +9,13 @@ public class UniversityDatabase {
     private int groupsIndex = 0;
 
     public void newGroup(Group group) {
-        groups[groupsIndex] = group;
-        groupsIndex++;
         if (groupsIndex >= groups.length) {
             Group[] newGroups = new Group[groups.length * 2];
-            System.arraycopy(newGroups, 0, groups, 0, groups.length);
+            System.arraycopy(groups, 0, newGroups, 0, groups.length);
             groups = newGroups;
         }
+        groups[groupsIndex] = group;
+        groupsIndex++;
     }
 
     public boolean groupExist(String code) {
@@ -39,7 +39,7 @@ public class UniversityDatabase {
     public void newStudent(Student student) {
         if (studentsIndex >= students.length) {
             Student[] newStudents = new Student[students.length * 2];
-            System.arraycopy(newStudents, 0, students, 0, students.length);
+            System.arraycopy(students, 0, newStudents, 0, students.length);
             students = newStudents;
         }
         students[studentsIndex] = student;
@@ -73,7 +73,7 @@ public class UniversityDatabase {
     public void newLecturer(Lecturer lecturer) {
         if (lecturersIndex >= lecturers.length) {
             Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];
-            System.arraycopy(newLecturers, 0, lecturers, 0, lecturers.length);
+            System.arraycopy(lecturers, 0, newLecturers, 0, lecturers.length);
             lecturers = newLecturers;
         }
         lecturers[lecturersIndex] = lecturer;

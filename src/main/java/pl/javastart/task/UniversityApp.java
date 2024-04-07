@@ -1,7 +1,7 @@
 package pl.javastart.task;
 
 public class UniversityApp {
-    UniversityDatabase uniData = new UniversityDatabase();
+    private UniversityDatabase uniData = new UniversityDatabase();
     /**
      * Tworzy prowadzącego zajęcia.
      * W przypadku gdy prowadzący z zadanym id już istnieje, wyświetlany jest komunikat:
@@ -57,6 +57,8 @@ public class UniversityApp {
     public void addStudentToGroup(int index, String groupCode, String firstName, String lastName) {
         if (!uniData.groupExist(groupCode)) {
             System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else if (uniData.getGroup(groupCode).studentInGroup(index)) {
+            System.out.println("Student o indeksie " + index + " jest już w grupie " + groupCode);
         } else {
             Student student;
             if (!uniData.studendExist(index)) {
@@ -86,11 +88,11 @@ public class UniversityApp {
      */
     public void printGroupInfo(String groupCode) {
         if (!uniData.groupExist(groupCode)) {
-            System.out.println("Gruoa " + groupCode + " nie znaleziona");
+            System.out.println("Grupa " + groupCode + " nie znaleziona");
         } else {
             Group group = uniData.getGroup(groupCode);
             System.out.println("Kod: " + group.getCode());
-            System.out.println("Nazwa " + group.getName());
+            System.out.println("Nazwa: " + group.getName());
             System.out.print("Prowadzący: ");
             group.getLecturer().printInfo();
             System.out.println("Uczestnicy:");
@@ -114,6 +116,15 @@ public class UniversityApp {
      * @param grade        - ocena
      */
     public void addGrade(int studentIndex, String groupCode, double grade) {
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else if (!uniData.getGroup(groupCode).studentInGroup(studentIndex)) {
+            System.out.println("Student o indeksie " + studentIndex + " nie jest zapisany do grupy " + groupCode);
+        } else if (uniData.getStudent(studentIndex).hasGrade(groupCode)) {
+            System.out.println("Student o indeksie " + studentIndex + " ma już wystawioną ocenę dla grupy " + groupCode);
+        } else {
+            uniData.getStudent(studentIndex).newGrade(new Grade(grade, groupCode, uniData.getGroup(groupCode).getName()));
+        }
 
     }
 
@@ -126,7 +137,11 @@ public class UniversityApp {
      * @param index - numer indesku studenta dla którego wyświetlić oceny
      */
     public void printGradesForStudent(int index) {
-
+        if (!uniData.studendExist(index)) {
+            System.out.println("Student o indeksie " + index + " nie istnieje");
+        } else {
+            uniData.getStudent(index).printGrades();
+        }
     }
 
     /**
@@ -139,7 +154,11 @@ public class UniversityApp {
      * @param groupCode - kod grupy, dla której wyświetlić oceny
      */
     public void printGradesForGroup(String groupCode) {
-
+        if (!uniData.groupExist(groupCode)) {
+            System.out.println("Grupa " + groupCode + " nie istnieje");
+        } else {
+            uniData.getGroup(groupCode).printGrades();
+        }
     }
 
     /**
